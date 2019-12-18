@@ -1,0 +1,63 @@
+/* Fichier liste.acc */
+
+%prelude{ /* Code C */
+   /* Inclusion de bibliotheques C */
+   #include<stdio.h>
+   #include<malloc.h>
+
+   /* Action de fin d analyse */
+   void fin_analyse(){
+        printf("Fin de traitement \n") ;
+        printf("Syntaxe correcte \n") ;
+   }
+}
+
+/* Declaration des tokens */
+%token DEBUTDOC, FINDOC, TITREDOC_DEB, AUTEURDOC_DEB, DATEDOC_DEB, PARFER, TITRE, TITRE1_DEB, TITRE2_DEB, TITRE3_DEB, GRAS, ITALIQUE, LISTENONNUM_DEB, LISTENONNUM_FIN, LISTENUM_DEB, LISTENUM_FIN, ITEM, ANTISLASH, SUSPENSION, mot, SEPARATEUR ;
+
+// Grammaire
+
+
+Document : opts DOC {fin_analyse();}
+;
+
+opts : opt opts 
+     |
+     ;
+     
+opt : TITREDOC_DEB TEXTE PARFER
+            | DATEDOC_DEB TEXTE PARFER
+            | AUTEURDOC_DEB TEXTE PARFER
+;
+
+DOC : DEBUTDOC CONTENU FINDOC ;
+
+TEXTE : ANTISLASH TEXTE
+        | EXP TEXTE
+        | SUSPENSION TEXTE
+        | mot TEXTE
+        | liste TEXTE
+        |
+;
+
+EXP : ITALIQUE TEXTE PARFER TEXTE
+        | GRAS TEXTE PARFER TEXTE
+;
+
+liste : LISTENONNUM_DEB liste_items LISTENONNUM_FIN
+        | LISTENUM_DEB liste_items LISTENUM_FIN
+;
+
+liste_items : ITEM TEXTE liste_items
+        |
+;
+
+CONTENU : TITRE CONTENU
+        | SECTION CONTENU
+        |
+;
+
+SECTION : TITRE1_DEB TEXTE PARFER TEXTE
+        | TITRE2_DEB TEXTE PARFER TEXTE
+        | TITRE3_DEB TEXTE PARFER TEXTE
+;

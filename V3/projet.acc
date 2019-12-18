@@ -1,0 +1,81 @@
+/* Fichier liste.acc */
+
+%prelude{ /* Code C */
+   /* Inclusion de bibliotheques C */
+   #include<stdio.h>
+   #include<malloc.h>
+   #include <string.h>
+#include "yystype.h"
+   
+   
+
+   /* Action de fin d analyse */
+   void fin_analyse(){
+//         printf("Fin de traitement \n") ;
+//         printf("Syntaxe correcte \n") ;
+   }
+   
+   void verificationOptions(int OptionTitre, int OptionDate, int OptionAuteur)
+   {
+        if(OptionTitre>1) yyerror("ERREUR : Le titre du document a été défini plus d'une fois.\n"); 
+        else if (OptionAuteur>1) yyerror("ERREUR : L'auteur du document a été défini plus d'une fois.\n"); 
+        else if (OptionDate>1)yyerror("ERREUR : La date du document a été défini plus d'une fois.\n");
+        else fin_analyse();
+    }
+    
+}
+
+/* Declaration des tokens */
+%token DEBUTDOC, FINDOC, TITREDOC_DEB, AUTEURDOC_DEB, DATEDOC_DEB, PARFER, TITRE, TITRE1_DEB, TITRE2_DEB, TITRE3_DEB, GRAS, ITALIQUE, LISTENONNUM_DEB, LISTENONNUM_FIN, LISTENUM_DEB, LISTENUM_FIN, ITEM, ANTISLASH, SUSPENSION, mot, SEPARATEUR ;
+
+// Grammaire
+
+
+Document : {printf("<!doctype html>\n<html>\n   <head>\n    <meta charset='UTF-8'/>\n       <title>");} opts <OptionTitre, OptionDate,OptionAuteur> {printf("</title>\n   </head>\n");}DOC {printf("</html>");} {verificationOptions(OptionTitre, OptionDate, OptionAuteur);}
+;
+
+opts <%out int OptionTitre, int OptionDate, int OptionAuteur> : opt <OptionTitre1, OptionDate1, OptionAuteur1> opts <OptionTitre2, OptionDate2, OptionAuteur2> 
+{*OptionTitre = OptionTitre1 + OptionTitre2;
+    *OptionDate = OptionDate1 + OptionDate2;
+    *OptionAuteur = OptionAuteur1 + OptionAuteur2;
+}
+     | {*OptionTitre = 0;*OptionDate = 0;*OptionAuteur = 0;}
+     ;
+     
+opt <%out int OptionTitre, int OptionDate, int OptionAuteur > : {*OptionTitre = 1;*OptionDate = 0;*OptionAuteur = 0;} TITREDOC_DEB  TEXTE PARFER 
+            | DATEDOC_DEB TEXTE PARFER {*OptionTitre = 0;*OptionDate = 1;*OptionAuteur = 0;}
+            | AUTEURDOC_DEB TEXTE PARFER {*OptionTitre = 0;*OptionDate = 0;*OptionAuteur = 1;}
+;
+
+DOC : DEBUTDOC {printf("    <body>\n");} CONTENU FINDOC {printf("</body>\n");} 
+;
+
+TEXTE : ANTISLASH {printf("\n");} TEXTE 
+        | EXP TEXTE
+        | SUSPENSION {printf("...");} TEXTE 
+        | mot <ch> {printf(" %s",ch.texte);} TEXTE 
+        | liste TEXTE
+        |
+;
+
+EXP : ITALIQUE {printf("<i>");} TEXTE PARFER {printf("</i>");} TEXTE
+        | GRAS {printf("<b>");} TEXTE PARFER {printf("</b>");} TEXTE
+;
+
+liste : LISTENONNUM_DEB {printf("<ul>");} liste_items LISTENONNUM_FIN {printf("</ul>\n");}
+        | LISTENUM_DEB {printf("<ol>");} liste_items LISTENUM_FIN {printf("</ol>\n");}
+;
+
+liste_items : ITEM {printf("<li>");} TEXTE {printf("</li>\n");} liste_items 
+        |
+;
+
+CONTENU : TITRE CONTENU
+        | SECTION <niv1,niv2> CONTENU
+        |
+;
+
+SECTION <%in int niv1, int niv2 >: TITRE1_DEB {printf("<h1>");} TEXTE PARFER {printf("</h1>\n");} TEXTE {niv1 = 1;}
+        | TITRE2_DEB {printf("<h2>");} TEXTE PARFER {printf("</h2>\n");} TEXTE {if (niv1 == 1){niv2 = 1;}else{yyerror("ERREUR la section de niveau 1 n'a pas été définie.\n");}}
+        | TITRE3_DEB {printf("<h3>");} TEXTE PARFER {printf("</h3>\n");} TEXTE {if (niv2 == 1){}else{yyerror("ERREUR la section de niveau 2 n'a pas été définie.\n");}}
+;
