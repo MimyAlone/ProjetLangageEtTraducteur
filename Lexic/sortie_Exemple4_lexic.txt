@@ -1,0 +1,6 @@
+Identificateur : v
+Identificateur : ar
+Mauvais caractere : 8
+Mauvais caractere : 7
+Identificateur : i
+Identificateur : d

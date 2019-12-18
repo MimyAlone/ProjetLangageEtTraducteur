@@ -1,0 +1,8 @@
+Identificateur : var
+Affectation
+Mauvais caractere : (
+Entier : 15
+Addition
+Reel : 36.10
+Mauvais caractere : )
+Mauvais caractere : ;

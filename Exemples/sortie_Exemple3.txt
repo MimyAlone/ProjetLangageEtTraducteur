@@ -1,0 +1,5 @@
+Mot id truove
+Affectation
+Entier : 15
+Addition
+Reel : 36.10

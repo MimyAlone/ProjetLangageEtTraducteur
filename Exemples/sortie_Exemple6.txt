@@ -1,0 +1,9 @@
+Identificateur : var
+Identificateur : v
+Affectation
+Entier : 15
+Soustraction
+Entier : 15
+Addition
+Soustraction
+Affectation

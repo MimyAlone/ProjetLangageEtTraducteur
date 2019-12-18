@@ -1,0 +1,14 @@
+Identificateur : var
+Affectation
+Entier : 15
+Addition
+Reel : 36.10
+Identificateur : v
+Affectation
+Addition
+Entier : 14
+Soustraction
+Reel : 17.30
+Addition
+Addition
+Entier : 48

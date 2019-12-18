@@ -1,0 +1,5 @@
+Identificateur : id
+Affectation
+Entier : 15
+Addition
+Reel : 36.10

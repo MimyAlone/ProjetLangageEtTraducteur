@@ -1,0 +1,13 @@
+Identificateur : v
+Identificateur : ar
+Affectation
+Entier signé reconnu: 15
+Addition
+Reel signé reconnu: 36.10
+Identificateur : v
+Affectation
+Entier signé reconnu: 14
+Soustraction
+Reel signé reconnu: 17.30
+Addition
+Entier signé reconnu: 48
